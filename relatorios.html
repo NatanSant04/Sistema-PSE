@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Análise e Cadastro</title>
+    <style>
+        /* Estilos básicos para centralizar e dar um visual limpo */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header {
+            width: 100%;
+            background-color: #A00000;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Sombra mais forte */
+        }
+        .header img {
+            height: 80px;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .container {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 700px; /* Um pouco mais largo para os relatórios */
+            margin-top: 30px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+        h3 {
+            color: #A00000; /* Destaque em vermelho para os títulos 1. e 2. */
+            font-size: 1.5em;
+            border-bottom: 2px solid #A00000;
+            padding-bottom: 5px;
+            margin-bottom: 25px;
+            margin-top: 25px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Espaço entre o input de texto e o botão */
+        }
+        .form-group label {
+            min-width: 150px;
+            color: #444;
+            font-weight: bold;
+        }
+        .form-group select,
+        .form-group input[type="text"] {
+            flex-grow: 1; /* Faz o campo de texto ocupar o espaço restante */
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #A00000; 
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #800000;
+        }
+        .logo-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .message {
+            padding: 10px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .graph-area {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-text">
+            <img src="{{ url_for('static', filename='imagens/logo_paulisano.png') }}" alt="Logo Clube Paulistano" style="height: 50px;">
+            <h1>PAINEL DE ANÁLISE</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        {% if mensagem_cadastro %}
+            <div class="message">{{ mensagem_cadastro }}</div>
+        {% endif %}
+
+        
+        <h3>1. Cadastrar Novo Atleta</h3>
+        
+        <form method="POST" action="{{ url_for('relatorios') }}"> 
+            <div class="form-group">
+                <label for="nome_novo_atleta">Nome do Atleta:</label>
+                <input type="text" name="nome_novo_atleta" id="nome_novo_atleta" placeholder="Ex: Lucas Dantas" required>
+                <button type="submit" class="button">Adicionar Atleta</button>
+            </div>
+        </form>
+
+        
+        <h3>2. Visualizar Gráficos de Treino</h3>
+        
+        <form method="GET" action="{{ url_for('relatorios') }}">
+            <div class="form-group" style="gap: 20px;">
+                <label for="atleta_nome">Selecione o Atleta:</label>
+                <select name="atleta_nome" id="atleta_nome" required onchange="this.form.submit()" style="max-width: 250px;">
+                    <option value="" disabled selected>-- Escolha um Atleta --</option>
+                    {% for id, nome in atletas %}
+                    <option value="{{ nome }}" {% if nome == nome_selecionado %} selected {% endif %}>
+                        {{ nome }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <noscript><button type="submit" class="button">Gerar</button></noscript>
+            </div>
+        </form>
+        
+        <div class="graph-area">
+            {% if nome_selecionado and grafico %}
+                <h4>Relatório Semanal (Semana {{ numero_semana }}) para {{ nome_selecionado }}</h4>
+                <img src="data:image/png;base64,{{ grafico }}" alt="Gráfico Semanal de PSE">
+            
+            {% elif nome_selecionado %}
+                <p>Nenhum dado de treino encontrado para <strong>{{ nome_selecionado }}</strong> nesta semana.</p>
+            
+            {% else %}
+                <p>Selecione um atleta para gerar o relatório de carga semanal.</p>
+            {% endif %}
+        </div>
+        
+    </div>
+    
+    <a href="{{ url_for('index') }}" class="button" style="width: 200px; background-color: #888;">
+        ← Voltar
+    </a>
+</body>
+</html>

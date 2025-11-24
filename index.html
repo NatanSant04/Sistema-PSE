@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Treino PSE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Estilos básicos para centralizar e dar um visual limpo */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Cor de fundo suave */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header {
+            width: 100%;
+            background-color: #A00000; /* Vermelho escuro do cabeçalho */
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header img {
+            height: 80px; /* Ajuste o tamanho do logo */
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .container {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 90%; /* Ajuste a largura conforme necessário */
+            max-width: 600px; /* Largura máxima para centralizar */
+            margin-top: 30px;
+            margin-bottom: 30px;
+            box-sizing: border-box; /* Inclui padding na largura total */
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .form-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .form-section h3 {
+            color: #555;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            border-left: 4px solid #A00000; /* Detalhe vermelho */
+            padding-left: 10px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
+            font-weight: bold;
+        }
+        .form-group select,
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: calc(100% - 20px); /* Ajusta para padding */
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #A00000; /* Botão principal */
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-top: 25px;
+        }
+        .button:hover {
+            background-color: #800000; /* Tom mais escuro no hover */
+        }
+        .button.secondary {
+            background-color: #555; /* Botão secundário para relatórios */
+            margin-top: 15px;
+        }
+        .button.secondary:hover {
+            background-color: #333;
+        }
+        .logo-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Espaço entre logo e texto */
+        }
+        .logo-text img {
+            margin-bottom: 0; /* Remove margem extra do logo nesta composição */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-text">
+            <img src="{{ url_for('static', filename='logo_paulisano.png') }}" alt="Logo Clube Paulistano">
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Registro Diário de Treino</h2>
+        <form method="POST">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="atleta_id">Selecione o Atleta:</label>
+                    <select id="atleta_id" name="atleta_id" required>
+                        <option value="">-- Escolha um Atleta --</option>
+                        {% for id, nome in atletas %}
+                            <option value="{{ id }}">{{ nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Condição Física e Carga</h3>
+                <div class="form-group">
+                    <label for="peso_dia">Peso do Dia (kg):</label>
+                    <input type="number" id="peso_dia" name="peso_dia" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="recuperacao_nivel">Recuperação (1-10):</label>
+                    <input type="number" id="recuperacao_nivel" name="recuperacao_nivel" min="1" max="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="lesao_obs">Observação de Lesão:</label>
+                    <input type="text" id="lesao_obs" name="lesao_obs" placeholder="Nenhuma">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Detalhes do Treino</h3>
+                <div class="form-group">
+                    <label for="tipo_treino">Tipo de Treino:</label>
+                    <select id="tipo_treino" name="tipo_treino" required>
+                        {% for tipo in tipos_treino %}
+                            <option value="{{ tipo }}">{{ tipo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tempo_minutos">Tempo (min):</label>
+                    <input type="number" id="tempo_minutos" name="tempo_minutos" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="cansaco_nivel">Cansaço (1-10):</label>
+                    <input type="number" id="cansaco_nivel" name="cansaco_nivel" min="1" max="10" required>
+                </div>
+            </div>
+
+            <button type="submit" class="button">Salvar Registro e Calcular PSE Total</button>
+        </form>
+
+        <a href="{{ url_for('relatorios') }}" class="button secondary">→ RELATÓRIOS E GRÁFICOS</a>
+    </div>
+</body>
+</html>
