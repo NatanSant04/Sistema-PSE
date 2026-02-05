@@ -11,8 +11,10 @@ Análise de Wellness: Gráfico específico para monitorar a recuperação do atl
 
 Monitoramento Biométrico: Acompanhamento da variação de peso e cálculo de média semanal automática.
 
+Painel de login: Acesso para entranda no sistema, como 'atleta' ou como 'tecnico'.
+
 **Tecnologias Utilizadas**
-Backend: Python 3.x com framework Flask.
+Backend: Python 3.12 com framework Flask.
 
 Banco de Dados: SQLite para armazenamento local e persistente.
 
@@ -36,7 +38,7 @@ Saúde (Peso e Lesão): Monitoramento de categorias de peso e alertas de dores o
 4. Acesse no navegador.
 
 **Próximos Passos (Roadmap)**
-[ ] Implementação de sistema de autenticação (Login/Senha) para Comissão Técnica.
+[x] Implementação de sistema de autenticação (Login/Senha) para Comissão Técnica.
 
 [ ] Exportação de relatórios em PDF.
 
